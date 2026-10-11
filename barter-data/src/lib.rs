@@ -91,6 +91,10 @@
 //!     }
 //! }
 //! ```
+// Used by example targets, not by the library test target.
+#[cfg(test)]
+use tracing_subscriber as _;
+
 use crate::{
     error::DataError,
     event::MarketEvent,

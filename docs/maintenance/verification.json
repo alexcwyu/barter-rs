@@ -1,0 +1,268 @@
+{
+  "repository": "barter-rs",
+  "source_commit_before_documentation_commit": "c699d12c62d8a7abb749142cb508efbc226c1f09",
+  "recorded_on": "2026-10-12",
+  "records": [
+    {
+      "command": [
+        "cargo",
+        "build",
+        "--workspace",
+        "--all-targets"
+      ],
+      "exit_code": 0,
+      "seconds": 145.02,
+      "cwd": "<workspace>/barter-rs",
+      "check": "build",
+      "original_log": "barter-rs-build.log",
+      "log_sha256": "6de46601808f49e66e35dc8867c905458d76b59891cad755c30a5ed5bf47a134",
+      "outcomes": []
+    },
+    {
+      "command": [
+        "cargo",
+        "clippy",
+        "--workspace",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit_code": 101,
+      "seconds": 7.43,
+      "cwd": "<workspace>/barter-rs",
+      "check": "clippy-constructor-source",
+      "original_log": "barter-rs-clippy-constructor-source.log",
+      "log_sha256": "cd5f95053905ea9039c90a2f12c050d32c6b8e2c209a1229d30bc28b9029ff5a",
+      "outcomes": []
+    },
+    {
+      "command": [
+        "cargo",
+        "clippy",
+        "--workspace",
+        "--all-targets",
+        "--locked",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit_code": 101,
+      "seconds": 5.87,
+      "cwd": "<workspace>/barter-rs",
+      "check": "clippy-current-modules",
+      "original_log": "barter-rs-clippy-current-modules.log",
+      "log_sha256": "5fc6cf8fc74154bf6c9e1e5783808516bd0b8913d61b329a1a0d1ba371e699eb",
+      "outcomes": []
+    },
+    {
+      "command": [
+        "cargo",
+        "clippy",
+        "--workspace",
+        "--all-targets",
+        "--locked",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit_code": 101,
+      "seconds": 1.29,
+      "cwd": "<workspace>/barter-rs",
+      "check": "clippy-existing-cases",
+      "original_log": "barter-rs-clippy-existing-cases.log",
+      "log_sha256": "e212d7bcbd6e33aa18d17e0abf167439518706008349aa9afdd505fedb829993",
+      "outcomes": []
+    },
+    {
+      "command": [
+        "cargo",
+        "clippy",
+        "--workspace",
+        "--all-targets",
+        "--locked",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit_code": 101,
+      "seconds": 6.98,
+      "cwd": "<workspace>/barter-rs",
+      "check": "clippy-final",
+      "original_log": "barter-rs-clippy-final.log",
+      "log_sha256": "b74e9fe7111708436fb50ce460f9f0cf0b2f538618bad9cec9d8c2ab832c8c65",
+      "outcomes": []
+    },
+    {
+      "command": [
+        "cargo",
+        "clippy",
+        "--workspace",
+        "--all-targets",
+        "--locked",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit_code": 0,
+      "seconds": 4.54,
+      "cwd": "<workspace>/barter-rs",
+      "check": "clippy-final-existing-workspace",
+      "original_log": "barter-rs-clippy-final-existing-workspace.log",
+      "log_sha256": "22e07d5a91621d2fb8cc9e273f7169f2189b58b7ab727fe4078eb845bce5efb4",
+      "outcomes": []
+    },
+    {
+      "command": [
+        "cargo",
+        "clippy",
+        "--fix",
+        "--workspace",
+        "--all-targets",
+        "--allow-dirty",
+        "--allow-staged",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit_code": 0,
+      "seconds": 22.82,
+      "cwd": "<workspace>/barter-rs",
+      "check": "clippy-machine-fixes",
+      "original_log": "barter-rs-clippy-machine-fixes.log",
+      "log_sha256": "7c4a7a1843019f39ecc798df45d92686c7cd84996320c661641a2be246e4bd74",
+      "outcomes": []
+    },
+    {
+      "command": [
+        "cargo",
+        "clippy",
+        "--workspace",
+        "--all-targets",
+        "--locked",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit_code": 101,
+      "seconds": 7.49,
+      "cwd": "<workspace>/barter-rs",
+      "check": "clippy-post-fix-check",
+      "original_log": "barter-rs-clippy-post-fix-check.log",
+      "log_sha256": "ec26073056924c2c063172008c36525627f7e233697bd3291fdc872e56591b9c",
+      "outcomes": []
+    },
+    {
+      "command": [
+        "cargo",
+        "clippy",
+        "--workspace",
+        "--all-targets",
+        "--locked",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit_code": 101,
+      "seconds": 10.84,
+      "cwd": "<workspace>/barter-rs",
+      "check": "clippy-required",
+      "original_log": "barter-rs-clippy-required.log",
+      "log_sha256": "e7bdd957e6282cba45e79c48e9cb2b2a25bdf34fe7ad11b9c14b0da1d5851da2",
+      "outcomes": []
+    },
+    {
+      "command": [
+        "sh",
+        "-c",
+        "/opt/homebrew/opt/rustup/bin/cargo fmt --all --check && /opt/homebrew/opt/rustup/bin/cargo build --workspace --all-targets && /opt/homebrew/opt/rustup/bin/cargo test --workspace"
+      ],
+      "exit_code": 1,
+      "seconds": 1.57,
+      "cwd": "<workspace>/barter-rs",
+      "check": "final-existing-build-tests",
+      "original_log": "barter-rs-final-existing-build-tests.log",
+      "log_sha256": "99756b4aa613ed7e146ffe4397269d4dbd2c033f4f5573d8759a8ec395f1910f",
+      "outcomes": []
+    },
+    {
+      "command": [
+        "sh",
+        "-c",
+        "cargo fmt --all --check && cargo build --workspace --all-targets && cargo test --workspace"
+      ],
+      "exit_code": 0,
+      "seconds": 445.17,
+      "cwd": "<workspace>/barter-rs",
+      "check": "final-formatted-build-tests",
+      "original_log": "barter-rs-final-formatted-build-tests.log",
+      "log_sha256": "37e8409de482eb8450f2811e757051b5b98d9f9e2b662eb85fd594cc05070185",
+      "outcomes": [
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 59 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 63 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 0 passed; 0 failed; 3 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+      ]
+    },
+    {
+      "command": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "exit_code": 0,
+      "seconds": 1.03,
+      "cwd": "<workspace>/barter-rs",
+      "check": "format-required",
+      "original_log": "barter-rs-format-required.log",
+      "log_sha256": "23687148627bbd06a04fbda5087012cd518d2a3ef7565907a4246a9e0a0b4218",
+      "outcomes": []
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--workspace"
+      ],
+      "exit_code": 0,
+      "seconds": 100.21,
+      "cwd": "<workspace>/barter-rs",
+      "check": "test",
+      "original_log": "barter-rs-test.log",
+      "log_sha256": "bca801c71b4e4f65135aaf9ae4b26115f0ebbbc7ae699d4f00c23181b3f48177",
+      "outcomes": [
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 59 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+        "test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 63 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+        "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 0 passed; 0 failed; 3 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+      ]
+    }
+  ],
+  "summary": {
+    "repo": "barter-rs",
+    "branch": "feature/ayu_develop",
+    "status": "All owned native targets build; the complete existing suite, formatting check and strict all-target Clippy pass.",
+    "runtime": "Rust stable1.99.0 on macOS ARM",
+    "tests": "224 existing tests passed;3 pre-existing documentation examples remain ignored. No new cases were added.",
+    "notes": "Latest licensed derive_more-impl2.1.1 emits equivalent field shorthand to address the Clippy1.99 external-macro false positive. Existing example/benchmark fixtures and unit-success branches were adapted to current lints; constructor values/signatures and meaningful existing assertions are preserved. Strict Clippy uses -D warnings, while stable rustfmt reports existing nightly-only imports_granularity configuration warnings."
+  },
+  "note": "Full raw logs are retained in the workspace maintenance evidence, not distributed here. Hashes identify those original logs. A successful build or selected test subset does not imply a full test-suite pass. Commands containing <workspace> describe the original execution environment."
+}

@@ -37,6 +37,10 @@
 //! ## Getting Started Via Engine Examples
 //! [See Engine Examples](https://github.com/barter-rs/barter-rs/tree/feat/docs_tests_readmes_examples/barter/examples)
 
+// Criterion is used by benchmark targets rather than library tests.
+#[cfg(test)]
+use criterion as _;
+
 use crate::{
     engine::{command::Command, state::trading::TradingState},
     execution::AccountStreamEvent,

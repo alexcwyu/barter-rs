@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Historical development guide</title><style>
+:root{color-scheme:light dark;--bg:#f6f8fa;--paper:#fff;--fg:#182332;--muted:#526274;--line:#d9e0e7;--accent:#1769aa}
+@media(prefers-color-scheme:dark){:root{--bg:#111820;--paper:#192330;--fg:#e6edf3;--muted:#a0b3c5;--line:#344354;--accent:#71b7ee}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.7 system-ui,-apple-system,sans-serif}
+header{border-bottom:1px solid var(--line);padding:16px max(24px,calc((100vw - 1120px)/2));background:var(--paper);font-size:14px}
+main{max-width:1120px;margin:32px auto;padding:40px 48px;background:var(--paper);border:1px solid var(--line);border-radius:12px}
+h1,h2,h3,h4{line-height:1.3;scroll-margin-top:24px}h1{font-size:2.1rem}h2{margin-top:2.5em;border-bottom:1px solid var(--line);padding-bottom:.35em}h3{margin-top:1.8em}
+a{color:var(--accent);text-underline-offset:3px}code{font:14px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--bg);border-radius:4px;padding:2px 5px}pre{overflow:auto;border:1px solid var(--line);background:var(--bg);padding:16px;border-radius:7px}pre code{padding:0;background:none}
+table{border-collapse:collapse;width:100%;display:block;overflow-x:auto;font-size:14px}th,td{border:1px solid var(--line);padding:9px 12px;text-align:left}th{background:var(--bg)}blockquote{border-left:4px solid var(--accent);margin:16px 0;padding:4px 20px;color:var(--muted)}
+.diagram{overflow-x:auto;margin:24px 0;padding:20px;border:1px solid var(--line);border-radius:8px;background:#fff;color:#182332}.mermaid{border:0;background:none;text-align:center}.mermaid svg{height:auto;max-width:100%}details{font-size:13px;color:#526274}.headerlink{margin-left:.4em;font-size:.7em;text-decoration:none;color:var(--muted)}
+main{min-width:0;overflow-wrap:anywhere}table,pre{max-width:100%}.diagram svg{display:block}
+th,td{min-width:120px;overflow-wrap:normal}
+@media(max-width:740px){main{margin:0;padding:24px 18px;border:0;border-radius:0}h1{font-size:1.7rem}.diagram{padding:8px}}
+@media print{header,details,.headerlink{display:none}body,main{background:#fff;color:#000;border:0;margin:0;padding:0}a{color:#000}.diagram,pre{break-inside:avoid}}
+</style></head><body><header>Engineering documentation · <a href="development-before-maintenance.md">Markdown source</a></header><main><h1 id="historical-development-guide">Historical development guide<a class="headerlink" href="#historical-development-guide" title="Permanent link">&para;</a></h1>
+<p>This guide records the repository before the 2026-10-12 maintenance. For current supported targets and environments, use <a href="../development.md">development.md</a>.</p>
+<h1 id="barter-rs-development-guide">Barter-rs — Development Guide<a class="headerlink" href="#barter-rs-development-guide" title="Permanent link">&para;</a></h1>
+<h2 id="setup">Setup<a class="headerlink" href="#setup" title="Permanent link">&para;</a></h2>
+<h3 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Requirement</th>
+<th>Version</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rust toolchain</td>
+<td>stable</td>
+<td>Pinned via <code>rust-toolchain.toml</code></td>
+</tr>
+<tr>
+<td>Cargo</td>
+<td>bundled with Rust</td>
+<td>workspace resolver v3 required</td>
+</tr>
+<tr>
+<td>Internet access</td>
+<td>—</td>
+<td>Required at build time for crates.io dependencies</td>
+</tr>
+</tbody>
+</table>
+<p>Barter-rs pins the stable Rust toolchain with the following components:</p>
+<pre><code class="language-toml"># rust-toolchain.toml
+[toolchain]
+channel = &quot;stable&quot;
+components = [&quot;cargo&quot;, &quot;clippy&quot;, &quot;rust-std&quot;, &quot;rustc&quot;, &quot;rustfmt&quot;]
+</code></pre>
+<h3 id="clone-and-build">Clone and Build<a class="headerlink" href="#clone-and-build" title="Permanent link">&para;</a></h3>
+<pre><code class="language-bash">git clone https://github.com/barter-rs/barter-rs.git
+cd barter-rs
+
+# Build all crates in release mode
+cargo build --release
+
+# Build a specific crate
+cargo build -p barter --release
+cargo build -p barter-data --release
+</code></pre>
+<h3 id="running-tests">Running Tests<a class="headerlink" href="#running-tests" title="Permanent link">&para;</a></h3>
+<pre><code class="language-bash"># All crates
+cargo test
+
+# Specific crate
+cargo test -p barter
+cargo test -p barter-data
+cargo test -p barter-execution
+
+# Parallel execution (requires cargo-nextest)
+cargo nextest run
+
+# With output (useful for integration tests)
+cargo test -- --nocapture
+
+# Run a named test
+cargo test test_trading_state_update
+</code></pre>
+<h3 id="code-quality">Code Quality<a class="headerlink" href="#code-quality" title="Permanent link">&para;</a></h3>
+<pre><code class="language-bash"># Lint
+cargo clippy --all-features -- -D warnings
+
+# Format check
+cargo fmt --check
+
+# Format in place
+cargo fmt
+
+# Type check without building
+cargo check
+</code></pre>
+<hr />
+<h2 id="project-structure">Project Structure<a class="headerlink" href="#project-structure" title="Permanent link">&para;</a></h2>
+<pre><code>barter-rs/
+├── Cargo.toml                   # Workspace root — shared dependencies
+├── rust-toolchain.toml          # Pinned stable toolchain
+├── rustfmt.toml                 # Formatting rules
+├── release-plz.toml             # Automated release configuration
+│
+├── barter/                      # Core trading engine crate (v0.12.x)
+│   ├── Cargo.toml
+│   ├── src/
+│   │   ├── lib.rs               # EngineEvent, Sequence, Timed
+│   │   ├── engine/
+│   │   │   ├── mod.rs           # Engine struct, Processor impl
+│   │   │   ├── run.rs           # sync_run, async_run, sync_run_with_audit
+│   │   │   ├── state/
+│   │   │   │   ├── mod.rs       # EngineState
+│   │   │   │   ├── trading/     # TradingState machine
+│   │   │   │   ├── asset/       # AssetState, AssetStates
+│   │   │   │   ├── instrument/  # InstrumentState, InstrumentStates
+│   │   │   │   ├── order/       # OrderManager
+│   │   │   │   ├── position.rs  # Position tracking
+│   │   │   │   └── connectivity/ # ConnectivityStates
+│   │   │   ├── action/          # CancelOrders, ClosePositions, GenerateAlgoOrders
+│   │   │   ├── audit/           # AuditTick, Auditor, StateReplicaManager
+│   │   │   ├── clock.rs         # EngineClock, LiveClock, HistoricalClock
+│   │   │   ├── command.rs       # Command enum
+│   │   │   └── execution_tx.rs  # ExecutionTxMap
+│   │   ├── system/
+│   │   │   ├── mod.rs           # System, SystemAuxillaryHandles
+│   │   │   ├── builder.rs       # SystemBuilder, SystemArgs
+│   │   │   └── config.rs        # SystemConfig, InstrumentConfig, ExecutionConfig
+│   │   ├── strategy/            # AlgoStrategy, ClosePositionsStrategy interfaces
+│   │   ├── risk/                # RiskManager interface + DefaultRiskManager
+│   │   ├── statistic/           # TradingSummary, TearSheet, Sharpe, Sortino
+│   │   ├── execution/           # ExecutionRequest routing, AccountStreamEvent
+│   │   └── backtest/            # Concurrent backtest utilities
+│   ├── examples/                # Runnable example binaries
+│   └── benches/                 # Criterion benchmarks (backtest throughput)
+│
+├── barter-data/                 # Market data streaming (v0.11.x)
+│   └── src/
+│       ├── lib.rs               # MarketStream trait, NoInitialSnapshots
+│       ├── exchange/            # Per-exchange Connector impls
+│       │   ├── binance/{spot,futures}/
+│       │   ├── coinbase/
+│       │   ├── okx/
+│       │   ├── bybit/
+│       │   ├── kraken/
+│       │   ├── gateio/
+│       │   ├── bitfinex/
+│       │   └── bitmex/
+│       ├── streams/             # StreamBuilder, DynamicStreams
+│       ├── subscription/        # PublicTrades, OrderBooksL1/L2/L3
+│       ├── transformer/         # StatelessTransformer, custom order book transformers
+│       └── books/               # Local OrderBook maintenance
+│
+├── barter-execution/            # Order execution (v0.7.x)
+│   └── src/
+│       ├── lib.rs               # AccountEvent, AccountEventKind
+│       ├── client/              # ExecutionClient trait, MockExecutionClient
+│       ├── exchange/            # Live exchange execution wrappers
+│       ├── order/               # Order, OrderState, OrderRequest types
+│       └── trade.rs             # Trade, AssetFees
+│
+├── barter-instrument/           # Domain types (v0.3.x)
+│   └── src/
+│       ├── lib.rs               # Keyed, Underlying, Side
+│       ├── exchange.rs          # ExchangeId enum (all supported venues)
+│       ├── asset/               # Asset, AssetKind, AssetIndex
+│       ├── instrument/          # Instrument, InstrumentKind (Spot/Perp/Future/Option)
+│       └── index/               # IndexedInstruments, builder
+│
+├── barter-integration/          # Protocol foundations (v0.10.x)
+│   └── src/
+│       ├── lib.rs               # Validator, Transformer, Terminal traits
+│       ├── protocol/            # StreamParser, WebSocket types
+│       ├── channel/             # Tx, UnboundedTx, ChannelTxDroppable
+│       ├── stream/              # ExchangeStream, ReconnectingStream
+│       └── socket/              # ReconnectingSocket
+│
+└── barter-macro/                # Procedural macros (v0.2.x)
+</code></pre>
+<hr />
+<h2 id="configuration-reference">Configuration Reference<a class="headerlink" href="#configuration-reference" title="Permanent link">&para;</a></h2>
+<h3 id="systemconfig-json"><code>SystemConfig</code> (JSON)<a class="headerlink" href="#systemconfig-json" title="Permanent link">&para;</a></h3>
+<p>The <code>SystemBuilder</code> expects a <code>SystemConfig</code> deserialisable from JSON. The example config lives at <code>barter/examples/config/system_config.json</code>.</p>
+<pre><code class="language-json">{
+  &quot;instruments&quot;: [
+    {
+      &quot;exchange&quot;: &quot;BinanceSpot&quot;,
+      &quot;name_exchange&quot;: &quot;BTCUSDT&quot;,
+      &quot;underlying&quot;: { &quot;base&quot;: &quot;BTC&quot;, &quot;quote&quot;: &quot;USDT&quot; },
+      &quot;quote&quot;: { &quot;asset&quot;: &quot;USDT&quot; },
+      &quot;kind&quot;: &quot;Spot&quot;,
+      &quot;spec&quot;: null
+    }
+  ],
+  &quot;executions&quot;: [
+    {
+      &quot;exchange&quot;: &quot;BinanceSpot&quot;,
+      &quot;fees_percent&quot;: &quot;0.001&quot;,
+      &quot;latency_ms&quot;: 10
+    }
+  ]
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>instruments[].exchange</code></td>
+<td><code>ExchangeId</code> (string)</td>
+<td>Exchange identifier matching <code>barter-instrument::ExchangeId</code> enum variant</td>
+</tr>
+<tr>
+<td><code>instruments[].name_exchange</code></td>
+<td>string</td>
+<td>Exchange-native symbol (e.g. <code>"BTCUSDT"</code>)</td>
+</tr>
+<tr>
+<td><code>instruments[].underlying</code></td>
+<td><code>{base, quote}</code></td>
+<td>Asset pair using exchange asset names</td>
+</tr>
+<tr>
+<td><code>instruments[].kind</code></td>
+<td><code>"Spot"</code> / <code>"Perpetual"</code> / <code>"Future"</code> / <code>"Option"</code></td>
+<td>Instrument type</td>
+</tr>
+<tr>
+<td><code>instruments[].spec</code></td>
+<td>optional object</td>
+<td>Price tick, quantity increment, min order size</td>
+</tr>
+<tr>
+<td><code>executions[].exchange</code></td>
+<td><code>ExchangeId</code></td>
+<td>Exchange this execution config applies to</td>
+</tr>
+<tr>
+<td><code>executions[].fees_percent</code></td>
+<td>decimal string</td>
+<td>Taker fee rate for mock execution</td>
+</tr>
+<tr>
+<td><code>executions[].latency_ms</code></td>
+<td>integer</td>
+<td>Simulated order round-trip latency</td>
+</tr>
+</tbody>
+</table>
+<p>Source: <code>barter/src/system/config.rs</code></p>
+<h3 id="systembuilder-options"><code>SystemBuilder</code> Options<a class="headerlink" href="#systembuilder-options" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.engine_feed_mode()</code></td>
+<td><code>EngineFeedMode</code></td>
+<td><code>Async</code></td>
+<td><code>Iterator</code> for backtests (blocking), <code>Async</code> for live trading</td>
+</tr>
+<tr>
+<td><code>.audit_mode()</code></td>
+<td><code>AuditMode</code></td>
+<td><code>Disabled</code></td>
+<td><code>Enabled</code> to receive <code>AuditTick</code> stream</td>
+</tr>
+<tr>
+<td><code>.trading_state()</code></td>
+<td><code>TradingState</code></td>
+<td><code>Disabled</code></td>
+<td>Initial trading state on startup</td>
+</tr>
+</tbody>
+</table>
+<p>Source: <code>barter/src/system/builder.rs</code></p>
+<h3 id="logging-tracing">Logging / Tracing<a class="headerlink" href="#logging-tracing" title="Permanent link">&para;</a></h3>
+<p>Barter uses <code>tracing</code> for structured logging. Initialise with the provided helper:</p>
+<pre><code class="language-rust">use barter::logging::init_logging;
+init_logging(); // reads RUST_LOG env var
+</code></pre>
+<p>Useful log targets:</p>
+<table>
+<thead>
+<tr>
+<th>Target</th>
+<th>What it logs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>barter::engine</code></td>
+<td>Event processing, TradingState changes</td>
+</tr>
+<tr>
+<td><code>barter_data</code></td>
+<td>WebSocket connect/disconnect, subscription handshake</td>
+</tr>
+<tr>
+<td><code>barter_execution</code></td>
+<td>Order submissions, fill confirmations</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="running-the-examples">Running the Examples<a class="headerlink" href="#running-the-examples" title="Permanent link">&para;</a></h2>
+<p>All examples are in <code>barter/examples/</code>. They require a <code>config/system_config.json</code> in the working directory:</p>
+<pre><code class="language-bash">cd barter-rs/barter
+
+# Paper trading with live market data
+cargo run --example engine_sync_with_live_market_data_and_mock_execution_and_audit
+
+# Async engine with historic data
+cargo run --example engine_async_with_historic_market_data_and_mock_execution
+
+# Multiple strategies
+cargo run --example engine_sync_with_multiple_strategies
+
+# Risk manager order checks
+cargo run --example engine_sync_with_risk_manager_open_order_checks
+
+# State replication via audit stream
+cargo run --example engine_sync_with_audit_replica_engine_state
+
+# Statistical summary only
+cargo run --example statistical_trading_summary
+
+# Concurrent backtests
+cargo run --example backtests_concurrent
+</code></pre>
+<hr />
+<h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
+<h3 id="1-websocket-connection-refused-or-times-out">1. WebSocket connection refused or times out<a class="headerlink" href="#1-websocket-connection-refused-or-times-out" title="Permanent link">&para;</a></h3>
+<p><strong>Symptoms</strong>: <code>barter-data</code> logs <code>failed to connect</code> or <code>SocketError::ConnectTimeout</code> at startup.</p>
+<p><strong>Causes and fixes</strong>:
+- Exchange API may be temporarily unavailable. Check the exchange status page.
+- Firewall or VPN blocking outbound WebSocket traffic. Verify outbound port 443 is open.
+- Incorrect exchange variant in config (e.g. using <code>BinanceSpot</code> when the instrument is on <code>BinanceFuturesUsd</code>). Cross-check <code>ExchangeId</code> with the instrument kind.</p>
+<h3 id="2-indexedinstruments-panics-on-instrument_index_mut">2. <code>IndexedInstruments</code> panics on <code>instrument_index_mut</code><a class="headerlink" href="#2-indexedinstruments-panics-on-instrument_index_mut" title="Permanent link">&para;</a></h3>
+<p><strong>Symptoms</strong>: Panic at <code>barter/src/engine/state/mod.rs</code> during market event processing with message <code>index out of bounds</code>.</p>
+<p><strong>Cause</strong>: A <code>MarketEvent</code> was received for an <code>InstrumentIndex</code> not registered in <code>IndexedInstruments</code>.</p>
+<p><strong>Fix</strong>: Ensure every <code>Subscription</code> passed to <code>StreamBuilder::subscribe()</code> corresponds to an instrument in <code>SystemConfig.instruments</code>. The subscription set and instrument list must be consistent.</p>
+<h3 id="3-tradingstateenabled-but-no-orders-are-generated">3. <code>TradingState::Enabled</code> but no orders are generated<a class="headerlink" href="#3-tradingstateenabled-but-no-orders-are-generated" title="Permanent link">&para;</a></h3>
+<p><strong>Symptoms</strong>: Market events arrive, <code>TradingState</code> is <code>Enabled</code>, but <code>AlgoOrders</code> audit output is always empty.</p>
+<p><strong>Causes and fixes</strong>:
+- <code>DefaultStrategy::generate_algo_orders()</code> returns no orders by default — it is a no-op placeholder. Implement <code>AlgoStrategy</code> with your own logic.
+- <code>RiskManager::check()</code> is filtering all orders. Add logging inside your <code>RiskManager</code> implementation to confirm.
+- The <code>InstrumentFilter</code> on a prior <code>CancelOrders</code> or <code>ClosePositions</code> command has put the engine into a safe state. Check command history in the audit stream.</p>
+<h3 id="4-backtest-runs-slower-than-expected">4. Backtest runs slower than expected<a class="headerlink" href="#4-backtest-runs-slower-than-expected" title="Permanent link">&para;</a></h3>
+<p><strong>Symptoms</strong>: <code>backtests_concurrent</code> example takes minutes for simple strategies.</p>
+<p><strong>Causes and fixes</strong>:
+- Building in debug mode. Always use <code>cargo run --release</code> for performance benchmarking.
+- Audit mode enabled (<code>AuditMode::Enabled</code>) adds channel send overhead on every event. Use <code>AuditMode::Disabled</code> for pure throughput benchmarks.
+- <code>EngineFeedMode::Async</code> adds Tokio channel overhead. Use <code>EngineFeedMode::Iterator</code> for backtests where the input <code>MarketStream</code> is a synchronous iterator over historical data.</p>
+<h3 id="5-compile-error-the-trait-bound-algostrategy-is-not-satisfied">5. Compile error: <code>the trait bound AlgoStrategy is not satisfied</code><a class="headerlink" href="#5-compile-error-the-trait-bound-algostrategy-is-not-satisfied" title="Permanent link">&para;</a></h3>
+<p><strong>Symptoms</strong>: Rust compiler reports missing trait implementations when calling <code>SystemBuilder::build()</code>.</p>
+<p><strong>Cause</strong>: <code>SystemBuilder</code> is parameterised on concrete <code>Strategy</code> and <code>Risk</code> types that must implement all required strategy traits.</p>
+<p><strong>Fix</strong>: Use <code>DefaultStrategy</code> and <code>DefaultRiskManager</code> as a starting point, or implement all required strategy traits (<code>AlgoStrategy</code>, <code>ClosePositionsStrategy</code>, <code>OnDisconnectStrategy</code>, <code>OnTradingDisabled</code>) for your custom type.</p>
+<hr />
+<h2 id="security-considerations">Security Considerations<a class="headerlink" href="#security-considerations" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>No unsafe code</strong>: All crates declare <code>#![forbid(unsafe_code)]</code>. Memory safety is guaranteed by the Rust borrow checker.</li>
+<li><strong>API keys</strong>: Never hardcode exchange API keys. Load them from environment variables or a secrets manager at runtime. The <code>barter-execution</code> <code>ExecutionClient</code> implementations accept credentials at construction time.</li>
+<li><strong>TLS</strong>: All WebSocket and REST connections in <code>barter-integration</code> use <code>rustls-tls-webpki-roots</code> — system CA stores are not required.</li>
+<li><strong>HMAC signing</strong>: Request signing for authenticated endpoints uses <code>hmac</code> + <code>sha2</code> from the <code>RustCrypto</code> ecosystem. Source: workspace <code>Cargo.toml</code> dependencies.</li>
+<li><strong>Educational use</strong>: Per the project LICENSE and README, barter-rs is provided for educational purposes. Do not deploy to production without thorough independent security and compliance review.</li>
+</ul>
+<hr />
+<h2 id="see-also">See Also<a class="headerlink" href="#see-also" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="README.md">README.md</a> — Project overview and quick start</li>
+<li><a href="architecture.md">architecture.md</a> — Crate responsibilities and component diagram</li>
+<li><a href="workflow.md">workflow.md</a> — Event processing pipeline</li>
+<li><a href="state-management.md">state-management.md</a> — <code>EngineState</code> internals and data models</li>
+</ul></main>
+</body></html>
