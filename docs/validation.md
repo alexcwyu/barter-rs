@@ -1,5 +1,11 @@
 # barter-rs: validation results
 
+<!-- current-documentation-provenance -->
+Documentation reviewed: 2026-10-13 · Git source base: `fff97c6925e2e08012f5243675e7057457f5d506` · [Current architecture and feature guide](ayu-develop.md).
+Historical execution commands/results below retain their original dates and scope; this metadata update is not a new application test run.
+<!-- /current-documentation-provenance -->
+
+
 All owned native targets build; the complete existing suite, formatting check and strict all-target Clippy pass.
 
 ## Verified scope
